@@ -1,0 +1,22 @@
+use nodeauth
+
+db.createCollection('users')
+
+show collections
+
+db.users.insert({name: 'Lucas Wang',email: 'hurricanew@hotmail.com',username: 'lucas', password: '1111'})
+
+db.users.find()
+
+db.users.insert({name: 'John Hardy',email: 'jh@lagado.com',username: 'john', password: '1111'})
+
+
+db.users.find().pretty()
+
+db.users.update({username: 'Lucas Wang'}, {$set: {email: hurricanew@yahoo.com}})
+
+db.users.update({username: 'lucas'}, {$set: {email: 'hurricanew@yahoo.com'}})
+
+db.users.insert({name: 'John Hardy redundant',email: 'jh@lagado.com',username: 'john', password: '1111'})
+
+db.users.remove({name: 'John Hardy redundant'});
