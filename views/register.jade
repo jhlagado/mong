@@ -1,8 +1,11 @@
 extends layout
 
 block content
-  h2.page-header #{title}
+  h2.page-header Regsiter
   p Please register using the form below
+  if (errors)
+    each error, i in errors
+      div.alert.alert-danger #{error.msg}
 
   form(method="post" action="/users/register", enctype="multipart/form-data")
     .form-group
