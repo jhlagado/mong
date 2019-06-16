@@ -69,7 +69,11 @@ app.use(function (req, res, next) {
   res.locals.messages = require('express-messages')(req, res);
   next();
 });
-
+app.get('*', (req, res, next) => {
+  res.locals.user = req.user || null;
+  console.log("req local user", res.locals.user)
+  next();
+});
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
@@ -88,5 +92,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
 
 module.exports = app;
