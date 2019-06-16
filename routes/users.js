@@ -5,6 +5,9 @@ const router = express.Router();
 const multer = require('multer');
 const upload = multer({dest: 'public/uploads'});
 
+
+const User = require('../models/user');
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
@@ -50,7 +53,15 @@ router.route("/register")
     if (errors) {
       res.render('register', {errors: errors});
     } else {
-        console.log('no erros');
+    const newUser = new User({
+        name: name,
+        email: email,
+        username: username,
+        password: password,
+        profileImage: `uploads/${profileImage}`
+      });
+      newUser.save();
+      res.redirect('/');
     }
   })
 module.exports = router;
