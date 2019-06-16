@@ -1,4 +1,4 @@
 # mong
-experiments with mongo and docker
+simple login system for workshop, 
 
-For examples see https://www.w3schools.com/nodejs/nodejs_mongodb.asp
+use node, exress, passport, view template is jade
