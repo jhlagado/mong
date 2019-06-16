@@ -10,7 +10,7 @@ const run = async () => {
     db.close();
   }
   catch (err) {
-    console.log("Error", err.message);
+    console.log("Error!", err.message);
   }
 }
 
