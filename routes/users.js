@@ -61,6 +61,7 @@ router.route("/register")
         profileImage: `uploads/${profileImage}`
       });
       newUser.save();
+      req.flash('success', 'You are now registered and can login.');
       res.redirect('/');
     }
   })
