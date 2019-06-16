@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcrypt');
 
 //file upload
 const multer = require('multer');
@@ -57,7 +58,7 @@ router.route("/register")
         name: name,
         email: email,
         username: username,
-        password: password,
+        password: bcrypt.hashSync(password, 10),
         profileImage: `uploads/${profileImage}`
       });
       newUser.save();
