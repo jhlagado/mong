@@ -1,24 +1,26 @@
 const express = require('express');
+
 const router = express.Router();
 const bcrypt = require('bcrypt');
 
-//file upload
+// file upload
 const multer = require('multer');
+
 const upload = multer({ dest: 'public/uploads' });
 
-//passport
+// passport
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
 const User = require('../models/user');
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', (_req, res) => {
   res.send('respond with a resource');
 });
 router.route('/login')
-  .get((req, res) => {
-    res.render('login', { title: 'Login' })
+  .get((_req, res) => {
+    res.render('login', { title: 'Login' });
   })
   .post(passport.authenticate('local', {
     failureRedirect: '/users/login',
@@ -29,8 +31,8 @@ router.route('/login')
   });
 passport.use(new LocalStrategy(
   (username, password, done) => {
-    User.findOne({ username: username })
-      .then(user => {
+    User.findOne({ username })
+      .then((user) => {
         if (!user) {
           return done(null, false, { message: 'Incorrect username.' });
         }
@@ -42,40 +44,39 @@ passport.use(new LocalStrategy(
       .catch(err => done(err));
   }
 ));
-passport.serializeUser(function(user, done) {
+passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(function(id, done) {
+passport.deserializeUser((id, done) => {
   User.findById(id)
     .then(user => done(null, user))
     .catch(err => done(err));
 });
 
-router.route("/register")
-  .get((req, res) => {
+router.route('/register')
+  .get((_req, res) => {
     res.render('register', { title: 'Register' });
   })
   .post(upload.single('profileImage'), (req, res) => {
-    var name = req.body.name;
-    var email = req.body.email;
-    var username = req.body.username;
-    var password = req.body.password;
-    var password2 = req.body.password2;
+    const { name } = req.body;
+    const { email } = req.body;
+    const { username } = req.body;
+    const { password } = req.body;
 
     console.log(req.file);
 
-    //if there is a file
+    // if there is a file
+    let profileImage;
     if (req.file) {
       console.log('Uploading File ...');
-      var profileImage = req.file.filename;
-      console.log(profileImage);
+      profileImage = req.file.filename;
     } else {
       console.log('No File Uploaded ...');
-      var profileImage = 'noimage.jpg';
+      profileImage = 'noimage.jpg';
     }
-
     console.log(profileImage);
+
     // Form validator
     req.checkBody('name', 'Name field is required').notEmpty();
     req.checkBody('email', 'Email field is required').isEmail();
@@ -85,14 +86,14 @@ router.route("/register")
     req.checkBody('password2', 'Password not match').equals(req.body.password);
 
     // Check errors
-    let errors = req.validationErrors();
+    const errors = req.validationErrors();
     if (errors) {
-      res.render('register', { errors: errors });
+      res.render('register', { errors });
     } else {
       const newUser = new User({
-        name: name,
-        email: email,
-        username: username,
+        name,
+        email,
+        username,
         password: bcrypt.hashSync(password, 10),
         profileImage: `uploads/${profileImage}`
       });

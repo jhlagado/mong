@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://localhost:27017/nodeauth");
+mongoose.connect('mongodb://localhost:27017/nodeauth');
 
-const db = mongoose.connection;
-
-//access schema prop of mongoose
-const Schema = mongoose.Schema;
-//create instance of mongoose schema
-var userSchema = new Schema({
+// access schema prop of mongoose
+const { Schema } = mongoose;
+// create instance of mongoose schema
+const userSchema = new Schema({
   username: {
     type: String,
     index: true
@@ -29,6 +27,5 @@ var userSchema = new Schema({
 
 const User = mongoose.model('User', userSchema);
 
-//export the model/collection with the name of 'User'
-module.exports = User
-
+// export the model/collection with the name of 'User'
+module.exports = User;
