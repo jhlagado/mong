@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 //file upload
 const multer = require('multer');
-const upload = multer({dest: 'public/uploads'});
+const upload = multer({ dest: 'public/uploads' });
 
 //passport
 const passport = require('passport');
@@ -18,16 +18,19 @@ router.get('/', function(req, res, next) {
 });
 router.route('/login')
   .get((req, res) => {
-    res.render('login', {title: 'Login'})
+    res.render('login', { title: 'Login' })
   })
-  .post(passport.authenticate('local', {failureRedirect: '/users/login', failureFlash: 'Invalid Username or Password'}), (req, res) => {
+  .post(passport.authenticate('local', {
+    failureRedirect: '/users/login',
+    failureFlash: 'Invalid Username or Password'
+  }), (req, res) => {
     req.flash('success', 'You are now logged in');
     res.redirect('/');
   });
-  passport.use(new LocalStrategy(
-    (username, password, done) => {
-      User.findOne({ username: username }, (err, user) => {
-        if (err) { return done(err); }
+passport.use(new LocalStrategy(
+  (username, password, done) => {
+    User.findOne({ username: username })
+      .then(user => {
         if (!user) {
           return done(null, false, { message: 'Incorrect username.' });
         }
@@ -35,24 +38,25 @@ router.route('/login')
           return done(null, false, { message: 'Incorrect password.' });
         }
         return done(null, user);
-      });
-    }
-  ));
-  passport.serializeUser(function(user, done) {
-    done(null, user.id);
-  });
+      })
+      .catch(err => done(err));
+  }
+));
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
 
-  passport.deserializeUser(function(id, done) {
-    User.findById(id, function(err, user) {
-      done(err, user);
-    });
-  });
+passport.deserializeUser(function(id, done) {
+  User.findById(id)
+    .then(user => done(null, user))
+    .catch(err => done(err));
+});
 
 router.route("/register")
   .get((req, res) => {
     res.render('register', { title: 'Register' });
   })
-  .post(upload.single('profileImage'),(req, res) => {
+  .post(upload.single('profileImage'), (req, res) => {
     var name = req.body.name;
     var email = req.body.email;
     var username = req.body.username;
@@ -83,9 +87,9 @@ router.route("/register")
     // Check errors
     let errors = req.validationErrors();
     if (errors) {
-      res.render('register', {errors: errors});
+      res.render('register', { errors: errors });
     } else {
-    const newUser = new User({
+      const newUser = new User({
         name: name,
         email: email,
         username: username,
@@ -97,7 +101,7 @@ router.route("/register")
       res.redirect('/');
     }
   });
-  router.get('/logout', (req, res) => {
+router.get('/logout', (req, res) => {
   req.logout();
   req.flash('success', 'You are now logged out');
   res.redirect('/users/login');
