@@ -4,8 +4,6 @@ mongoose.connect("mongodb://localhost:27017/nodeauth");
 
 const db = mongoose.connection;
 
-
-
 //access schema prop of mongoose
 const Schema = mongoose.Schema;
 //create instance of mongoose schema
