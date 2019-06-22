@@ -1,9 +1,0 @@
-db
-
-use customers
-
-show dbs
-
-db.createCollection('customer')
-
-show collections
