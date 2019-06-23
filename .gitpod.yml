@@ -4,5 +4,4 @@ ports:
 - port: 27017
 tasks:
 - command: mongod
-- command: npm i
-- command: node scripts/pop
+- command: npm install && node scripts/pop
