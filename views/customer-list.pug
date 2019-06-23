@@ -1,0 +1,36 @@
+extends layout
+
+block content
+
+  h1 Customers
+  p
+    a(href='/customers/new') Create new customer
+    | &nbsp; |
+    form(method="get")
+        .form-group
+          label Filter on email
+          input(type="text" name="email" class="form-control")
+          button(
+            type="submit"
+            name="button"
+            value="filter"
+          ).btn.btn-primary Filter
+          a.btn(href="/customers") Clear filter
+  if list.length
+    p
+      table.table
+        tr
+          th First Name
+          th Last Name
+          th Email
+          th Gender
+          th IP
+        each val in list
+          tr
+            td
+              a(href='/customers/' + val.id)= val.first_name
+            td
+              a(href='/customers/' + val.id)= val.last_name
+            td= val.email
+            td= val.gender
+            td= val.ip_address

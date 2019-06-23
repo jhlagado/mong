@@ -1,24 +1,24 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "type": "node",
-        "request": "launch",
-        "name": "Launch File",
-        "program": "${file}"
-      },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}/bin/www",
-            "env": {
-                "NODE_ENV": "development",
-                "PORT": "4000",
-                "DEBUG": "app,app*"
-            }
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/bin/www",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "4000",
+        "DEBUG": "app,app*"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch File",
+      "program": "${file}"
+    }
+  ]
 }

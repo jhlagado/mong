@@ -1,90 +1,95 @@
 const express = require('express');
-const database = {};
-
 const mongoose = require('mongoose');
-const Customer = require('../models/customer');
+
+const { pick } = require('../util');
 
 const db = mongoose.connect(
   'mongodb://localhost:27017/db',
   { useNewUrlParser: true }
 );
 
-const pick = (keys, object) => keys.reduce((acc, key) => {
-  if (key in object) {
-    acc[key] = object[key];
-  }
-  return acc;
-}, {});
+const getRouter = (model, allowedKeys) => {
 
-const getListRoutes = (route, model, allowedKeys) => {
+  const router = express.Router();
 
-  route
+  router.route('/')
+
+    .get(async (req, res) => {
+      const query = pick(allowedKeys, req.query);
+      const list = await model.find(query);
+      res.render('customer-list', {
+        title: 'Customers',
+        list,
+      });
+    });
+
+  router.route('/new')
+    .get(async (req, res) => {
+      res.render('customer-edit', {
+        title: 'Create Customer',
+        val: {},
+      });
+    })
 
     .post(async (req, res) => {
-      try {
-        const body = pick(allowedKeys, req.body);
-        const object = new model(body);
-        const doc = await object.save();
-        res.status(201).json(doc);
-      }
-      catch (err) {
-        res.status(400).send(err)
-      }
+      const body = pick(allowedKeys, req.body);
+      const object = new model(body);
+      const doc = await object.save();
+      req.flash('info', 'Item has been created');
+      res.redirect('/');
     })
 
+  router.route('/filter')
     .get(async (req, res) => {
-      try {
-        const query = pick(allowedKeys, req.query);
-        const doc = await model.find(query);
-        res.json(doc);
-      }
-      catch (err) {
-        res.status(400).send(err);
-      }
-    });
-};
+      res.render('customer-edit', {
+        title: 'Filter Customers',
+        val: {},
+      });
+    })
+    .post(async (req, res) => {
+      const body = pick(allowedKeys, req.body);
+      const object = new model(body);
+      const doc = await object.save();
+      req.flash('info', 'Item has been created');
+      res.redirect('/');
+    })
 
-const getItemRoutes = (route, model, allowedKeys) => {
-
-  route
+  router.route('/:id')
 
     .all(async (req, res, next) => {
-      try {
-        const { id } = req.params;
-        const object = await model.findById(id);
-        if (object) {
-          req.object = object;
-          return next();
-        }
-        res.sendStatus(404);
+      const { id } = req.params;
+      const object = await model.findById(id);
+      if (object) {
+        req.object = object;
+        return next();
       }
-      catch (err) {
-        next(err);
-      }
+      res.sendStatus(404);
     })
 
     .get(async (req, res) => {
-      res.json(req.object);
+      res.render('customer-edit', {
+        title: 'Customer',
+        val: req.object,
+        edit: true,
+      });
     })
 
-    .put(async (req, res) => {
+    .post(async (req, res) => {
       const { object } = req;
-      const body = pick(allowedKeys, req.body);
-      Object.assign(object, body);
-      await object.save();
-      res.json(object);
+      const button = req.body.button;
+      if (button  === 'save') {
+        const body = pick(allowedKeys, req.body);
+        Object.assign(object, body);
+        await object.save();
+        req.flash('info', 'Item has been updated');
+      }
+      else if (button  === 'delete') {
+        await req.object.delete(req.item)
+        req.flash('info', 'Item has been deleted');
+      }
+      res.redirect('/');
     })
 
-    .delete(async (req, res) => {
-      await req.object.delete(req.item)
-      res.sendStatus(204);
-    })
-};
-
-const getRouter = (model, allowedKeys) => {
-  const router = express.Router();
-  getListRoutes(router.route('/'), model, allowedKeys);
-  getItemRoutes(router.route('/:id'), model, allowedKeys);
   return router;
 }
 
