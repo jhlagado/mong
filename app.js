@@ -3,7 +3,7 @@ const logger = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-const customerRoutes = require('./routes/customer');
+const apiCustomerRoutes = require('./routes/api/customer');
 const Customer = require('./models/customer');
 
 const app = express();
@@ -17,7 +17,7 @@ const customerKeys = [
   'id', 'first_name', 'last_name',
   'email', 'gender', 'ip_address',
 ];
-app.use('/api/customers', customerRoutes(Customer, customerKeys));
+app.use('/api/customers', apiCustomerRoutes(Customer, customerKeys));
 
 app.get('/', (_req, res) => {
   res.redirect('/api/customers/');
