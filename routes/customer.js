@@ -8,6 +8,7 @@ const db = mongoose.connect(
   { useNewUrlParser: true }
 );
 mongoose.set('useFindAndModify', false)
+mongoose.set('useCreateIndex', true);
 
 const getRouter = (model, allowedKeys) => {
 

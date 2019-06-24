@@ -8,7 +8,11 @@ const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const expressMessages = require('express-messages');
 const session = require('express-session');
+const expressValidator = require('express-validator');
+const passport = require('passport');
 
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 const apiCustomerRoutes = require('./routes/api/customer');
 const Customer = require('./models/customer');
 const customerRoutes = require('./routes/customer');
@@ -31,11 +35,36 @@ app.use(session({
   saveUninitialized: true,
   resave: false
 }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(expressValidator({
+  errorFormatter(param, msg, value) {
+    const namespace = param.split('.');
+    const root = namespace.shift();
+    let formParam = root;
+
+    while (namespace.length) {
+      formParam += `[${namespace.shift()}]`;
+    }
+    return {
+      param: formParam,
+      msg,
+      value
+    };
+  }
+}));
 
 app.use(function(req, res, next) {
   res.locals.messages = expressMessages(req, res);
   next();
 });
+app.get('*', (req, res, next) => {
+  res.locals.user = req.user || null;
+  console.log('req local user', res.locals.user);
+  next();
+});
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
 
 const customerKeys = [
   'id', 'first_name', 'last_name',
@@ -43,10 +72,6 @@ const customerKeys = [
 ];
 app.use('/api/customers', apiCustomerRoutes(Customer, customerKeys));
 app.use('/customers', customerRoutes(Customer, customerKeys));
-
-app.get('/', (_req, res) => {
-  res.redirect('/customers');
-});
 
 app.use(function(req, res, next) {
   next(createError(404));
