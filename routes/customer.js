@@ -7,6 +7,7 @@ const db = mongoose.connect(
   'mongodb://localhost:27017/db',
   { useNewUrlParser: true }
 );
+mongoose.set('useFindAndModify', false)
 
 const getRouter = (model, allowedKeys) => {
 
@@ -15,13 +16,32 @@ const getRouter = (model, allowedKeys) => {
   router.route('/')
 
     .get(async (req, res) => {
-      const query = pick(allowedKeys, req.query);
+      const list = await model.find({});
+      res.render('customer-list', {
+        title: 'Customers',
+        filter: '',
+        list,
+      });
+    })
+    .post(async (req, res) => {
+      const filter = (req.body.filter || '').trim();
+      const terms = allowedKeys.reduce(
+        (acc, key) => {
+          if (filter) {
+            acc.push({ [key]: filter });
+          }
+          return acc;
+        },
+        []
+      );
+      const query = terms.length ? { $or: terms } : {};
       const list = await model.find(query);
       res.render('customer-list', {
         title: 'Customers',
         list,
+        filter,
       });
-    });
+    })
 
   router.route('/new')
     .get(async (req, res) => {
@@ -35,7 +55,7 @@ const getRouter = (model, allowedKeys) => {
       const body = pick(allowedKeys, req.body);
       const object = new model(body);
       const doc = await object.save();
-      req.flash('info', 'Item has been created');
+      req.flash('success', 'Item has been created');
       res.redirect('/');
     })
 
@@ -45,13 +65,6 @@ const getRouter = (model, allowedKeys) => {
         title: 'Filter Customers',
         val: {},
       });
-    })
-    .post(async (req, res) => {
-      const body = pick(allowedKeys, req.body);
-      const object = new model(body);
-      const doc = await object.save();
-      req.flash('info', 'Item has been created');
-      res.redirect('/');
     })
 
   router.route('/:id')
@@ -77,15 +90,15 @@ const getRouter = (model, allowedKeys) => {
     .post(async (req, res) => {
       const { object } = req;
       const button = req.body.button;
-      if (button  === 'save') {
+      if (button === 'save') {
         const body = pick(allowedKeys, req.body);
         Object.assign(object, body);
         await object.save();
-        req.flash('info', 'Item has been updated');
+        req.flash('success', 'Item has been updated');
       }
-      else if (button  === 'delete') {
+      else if (button === 'delete') {
         await req.object.delete(req.item)
-        req.flash('info', 'Item has been deleted');
+        req.flash('danger', 'Item has been deleted');
       }
       res.redirect('/');
     })

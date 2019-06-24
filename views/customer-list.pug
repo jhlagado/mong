@@ -5,16 +5,10 @@ block content
   h1 Customers
   p
     a(href='/customers/new') Create new customer
-    form(method="get")
+    form(method="post")
         .form-group
-          label Filter on email
-          input(type="text" name="email" class="form-control")
-          button(
-            type="submit"
-            name="button"
-            value="filter"
-          ).btn.btn-primary Filter
-          a.btn(href="/customers") Clear filter
+          label Filter fields
+          input(type="text" name="filter" class="form-control")
   if list.length
     p
       table.table

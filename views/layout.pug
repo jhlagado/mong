@@ -27,11 +27,7 @@ html(lang='en')
         // /.navbar-collapse
     // Main jumbotron for a primary marketing message or call to action
     .container
-      - const m = messages();
-      if m
-        div.alert.alert-info!= m
-      if m.info
-        div.alert.alert-info!= m.info
+      != messages('messages', locals)
 
       block content
     footer
