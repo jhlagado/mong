@@ -7,8 +7,8 @@ block content
     a(href='/customers/new') Create new customer
     form(method="post")
         .form-group
-          label Filter fields
-          input(type="text" name="filter" class="form-control")
+          label(style="display:block;") Filter
+            input(type="text" name="filter" class="form-control")
   if list.length
     p
       table.table
