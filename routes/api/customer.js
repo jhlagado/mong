@@ -1,24 +1,18 @@
 const express = require('express');
-const database = {};
-
 const mongoose = require('mongoose');
-const Customer = require('../models/customer');
+
+const { pick } = require('../../util');
 
 const db = mongoose.connect(
   'mongodb://localhost:27017/db',
   { useNewUrlParser: true }
 );
 
-const pick = (keys, object) => keys.reduce((acc, key) => {
-  if (key in object) {
-    acc[key] = object[key];
-  }
-  return acc;
-}, {});
+const getRouter = (model, allowedKeys) => {
 
-const getListRoutes = (route, model, allowedKeys) => {
+  const router = express.Router();
 
-  route
+  router.route('/')
 
     .post(async (req, res) => {
       try {
@@ -42,11 +36,8 @@ const getListRoutes = (route, model, allowedKeys) => {
         res.status(400).send(err);
       }
     });
-};
 
-const getItemRoutes = (route, model, allowedKeys) => {
-
-  route
+  router.route('/:id')
 
     .all(async (req, res, next) => {
       try {
@@ -79,12 +70,7 @@ const getItemRoutes = (route, model, allowedKeys) => {
       await req.object.delete(req.item)
       res.sendStatus(204);
     })
-};
 
-const getRouter = (model, allowedKeys) => {
-  const router = express.Router();
-  getListRoutes(router.route('/'), model, allowedKeys);
-  getItemRoutes(router.route('/:id'), model, allowedKeys);
   return router;
 }
 
