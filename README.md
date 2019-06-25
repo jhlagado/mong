@@ -1,2 +1,2 @@
 # mong
-simple Nodejs pug-based server using Mongodb
+simple Nodejs REST endpoint using Mongodb
