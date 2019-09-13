@@ -1,12 +1,36 @@
 const bcrypt = require('bcrypt');
 const express = require('express');
 const User = require('../models/user');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+
+passport.use(new LocalStrategy(
+  (username, password, done) => {
+    User.findOne({ username })
+      .then((user) => {
+        if (!user) {
+          return done(null, false, { message: 'Incorrect username.' });
+        }
+        if (!bcrypt.compareSync(password, user.password)) {
+          return done(null, false, { message: 'Incorrect password.' });
+        }
+        return done(null, user);
+      })
+      .catch(err => done(err));
+  }
+));
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findById(id)
+    .then(user => done(null, user))
+    .catch(err => done(err));
+});
 
 const router = express.Router();
-
-router.get('/login', function(req, res, next) {
- res.render('login', { title: 'Login' });
-});
 
 router.route('/register')
   .get((_req, res) => {
@@ -18,8 +42,6 @@ router.route('/register')
     const { email } = req.body;
     const { username } = req.body;
     const { password } = req.body;
-
-    console.log(req.file);
 
     // Form validator
     req.checkBody('name', 'Name field is required').notEmpty();
@@ -44,6 +66,18 @@ router.route('/register')
       req.flash('success', 'You are now registered and can login.');
       res.redirect('/');
     }
+  });
+
+router.route('/login')
+  .get((_req, res) => {
+    res.render('login', { title: 'Login' });
+  })
+  .post(passport.authenticate('local', {
+    failureRedirect: '/users/login',
+    failureFlash: 'Invalid Username or Password'
+  }), (req, res) => {
+    req.flash('success', 'You are now logged in');
+    res.redirect('/');
   });
 
 module.exports = router;

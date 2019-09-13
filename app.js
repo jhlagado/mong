@@ -7,6 +7,7 @@ const expressValidator = require('express-validator');
 const flash = require('connect-flash');
 const logger = require('morgan');
 const path = require('path');
+const passport = require('passport');
 const session = require('express-session');
 
 const Customer = require('./models/customer');
@@ -32,6 +33,8 @@ app.use(session({
   saveUninitialized: true,
   resave: false
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(expressValidator({
   errorFormatter(param, msg, value) {
@@ -52,6 +55,11 @@ app.use(expressValidator({
 
 app.use(function(req, res, next) {
   res.locals.messages = expressMessages(req, res);
+  next();
+});
+app.get('*', (req, res, next) => {
+  res.locals.user = req.user || null;
+  console.log('req local user', res.locals.user);
   next();
 });
 
