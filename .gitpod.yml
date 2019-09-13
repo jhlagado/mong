@@ -1,2 +1,7 @@
+image:
+  file: Dockerfile
+ports:
+- port: 27017
 tasks:
-- command: npm install
+- command: mongod
+- command: npm install && node scripts/pop
