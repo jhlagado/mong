@@ -38,6 +38,24 @@ router.route('/:id')
       });
     })
 
+    .post(async (req, res) => {
+      const { id } = req.params;
+      const object = await model.findById(id);
+      const button = req.body.button;
+
+      if (button === 'save') {
+        Object.assign(object, req.body);
+        await object.save();
+        req.flash('success', 'Item has been updated');
+
+      } else if (button === 'delete') {
+        await object.delete(req.item)
+        req.flash('danger', 'Item has been deleted');
+      }
+
+      res.redirect('/customers');
+    })
+
   return router;
 }
 

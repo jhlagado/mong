@@ -24,6 +24,7 @@ html(lang='en')
                 a(href='/users/logout') Logout
     // Main jumbotron for a primary marketing message or call to action
     .container
+      != messages('messages', locals)
 
       block content
     footer
