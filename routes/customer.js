@@ -26,11 +26,26 @@ const getRouter = (model, allowedKeys) => {
     })
 
 
-router.route('/:id')
+  router.route('/:id')
+
+    .all(async (req, res, next) => {
+      const { id } = req.params;
+      try {
+        const object = await model.findById(id);
+        if (object) {
+          req.object = object;
+          return next();
+        }
+      } catch (err) {
+        res.locals.message = err.message;
+        res.locals.error = req.app.get('env') === 'development' ? err : {};
+        res.status(err.status || 500);
+        res.render('error');
+      }
+    })
 
     .get(async (req, res) => {
-      const { id } = req.params;
-      const object = await model.findById(id);
+      const object = req.object;
       res.render('customer-edit', {
         title: 'Customer',
         val: object,
@@ -39,8 +54,7 @@ router.route('/:id')
     })
 
     .post(async (req, res) => {
-      const { id } = req.params;
-      const object = await model.findById(id);
+      const object = req.object;
       const button = req.body.button;
 
       if (button === 'save') {
