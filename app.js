@@ -1,9 +1,10 @@
-const express = require('express');
 const bodyParser = require('body-parser');
 const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
-const flash = require('connect-flash');
+const express = require('express');
 const expressMessages = require('express-messages');
+const expressValidator = require('express-validator');
+const flash = require('connect-flash');
 const logger = require('morgan');
 const path = require('path');
 const session = require('express-session');
@@ -31,6 +32,23 @@ app.use(session({
   saveUninitialized: true,
   resave: false
 }));
+
+// app.use(expressValidator({
+//   errorFormatter(param, msg, value) {
+//     const namespace = param.split('.');
+//     const root = namespace.shift();
+//     let formParam = root;
+
+//     while (namespace.length) {
+//       formParam += `[${namespace.shift()}]`;
+//     }
+//     return {
+//       param: formParam,
+//       msg,
+//       value
+//     };
+//   }
+// }));
 
 app.use(function(req, res, next) {
   res.locals.messages = expressMessages(req, res);
