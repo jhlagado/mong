@@ -12,12 +12,8 @@ html(lang='en')
 
         #navbar.navbar-collapse
           ul.nav.navbar-nav
-            if user
-              li(class=(title == "Members" ? "active" : ""))
-                a(href='/') Members
               li(class=(title == "Customers" ? "active" : ""))
                 a(href='/customers') Customers
-            if !user
               li(class=(title == "Register" ? "active" : ""))
                 a(href='/users/register') Register
               li(class=(title == "Login" ? "active" : ""))

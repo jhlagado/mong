@@ -1,0 +1,24 @@
+extends layout
+
+block content
+
+  h1 Customers
+  p
+  if list.length
+    p
+      table.table
+        tr
+          th First Name
+          th Last Name
+          th Email
+          th Gender
+          th IP
+        each val in list
+          tr
+            td
+              a(href='/customers/' + val.id)= val.first_name
+            td
+              a(href='/customers/' + val.id)= val.last_name
+            td= val.email
+            td= val.gender
+            td= val.ip_address

@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const path = require('path');
 
+const Customer = require('./models/customer');
+
 const indexRouter = require('./routes/index');
 const customerRoutes = require('./routes/customer');
 
@@ -18,8 +20,13 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const customerKeys = [
+  'id', 'first_name', 'last_name',
+  'email', 'gender', 'ip_address',
+];
+
 app.use('/', indexRouter);
-app.use('/customers', customerRoutes);
+app.use('/customers', customerRoutes(Customer, customerKeys));
 
 app.use(function(req, res, next) {
   next(createError(404));
