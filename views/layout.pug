@@ -26,12 +26,9 @@ html(lang='en')
             if user
               li
                 a(href='/users/logout') Logout
-        // /.navbar-collapse
     // Main jumbotron for a primary marketing message or call to action
     .container
-      != messages('messages', locals)
 
       block content
     footer
       p.text-center © 2019 Company, Inc.
-  // /container
