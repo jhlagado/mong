@@ -12,6 +12,7 @@ const Customer = require('./models/customer');
 
 const indexRouter = require('./routes/index');
 const customerRoutes = require('./routes/customer');
+const usersRouter = require('./routes/users');
 
 const app = express();
 
@@ -43,6 +44,7 @@ const customerKeys = [
 
 app.use('/', indexRouter);
 app.use('/customers', customerRoutes(Customer, customerKeys));
+app.use('/users', usersRouter);
 
 app.use(function(req, res, next) {
   next(createError(404));
