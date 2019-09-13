@@ -25,6 +25,19 @@ const getRouter = (model, allowedKeys) => {
       });
     })
 
+
+router.route('/:id')
+
+    .get(async (req, res) => {
+      const { id } = req.params;
+      const object = await model.findById(id);
+      res.render('customer-edit', {
+        title: 'Customer',
+        val: object,
+        edit: true,
+      });
+    })
+
   return router;
 }
 
