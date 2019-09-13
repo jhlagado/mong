@@ -7,7 +7,7 @@ block content
     each error, i in errors
       div.alert.alert-danger #{error.msg}
 
-  form(method="post" action="/users/register", enctype="multipart/form-data")
+  form(method="post")
     .form-group
       label Name
       input(type="text" placeholder="Enter name" name="name" class="form-control")

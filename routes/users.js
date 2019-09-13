@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const express = require('express');
 const User = require('../models/user');
 
@@ -12,8 +13,6 @@ router.route('/register')
     res.render('register', { title: 'Register' });
   })
   .post((req, res) => {
-
-console.log('===>', req.body);
 
     const { name } = req.body;
     const { email } = req.body;

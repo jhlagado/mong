@@ -33,22 +33,22 @@ app.use(session({
   resave: false
 }));
 
-// app.use(expressValidator({
-//   errorFormatter(param, msg, value) {
-//     const namespace = param.split('.');
-//     const root = namespace.shift();
-//     let formParam = root;
+app.use(expressValidator({
+  errorFormatter(param, msg, value) {
+    const namespace = param.split('.');
+    const root = namespace.shift();
+    let formParam = root;
 
-//     while (namespace.length) {
-//       formParam += `[${namespace.shift()}]`;
-//     }
-//     return {
-//       param: formParam,
-//       msg,
-//       value
-//     };
-//   }
-// }));
+    while (namespace.length) {
+      formParam += `[${namespace.shift()}]`;
+    }
+    return {
+      param: formParam,
+      msg,
+      value
+    };
+  }
+}));
 
 app.use(function(req, res, next) {
   res.locals.messages = expressMessages(req, res);
