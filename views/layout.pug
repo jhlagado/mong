@@ -2,23 +2,7 @@ doctype html
 html(lang='en')
   head
     title #{title}
-    // Bootstrap core CSS
-    link(href='/stylesheets/style.css', rel='stylesheet')
   body
-    nav.navbar.navbar-inverse
-      .container
-        .navbar-header
-          a.navbar-brand(href='#') PC Repairs
-
-        #navbar.navbar-collapse
-          ul.nav.navbar-nav
-              li(class=(title == "Register" ? "active" : ""))
-                a(href='/users/register') Register
-              li(class=(title == "Login" ? "active" : ""))
-                a(href='/users/login') Login
-    // Main jumbotron for a primary marketing message or call to action
     .container
 
       block content
-    footer
-      p.text-center © 2019 Company, Inc.
