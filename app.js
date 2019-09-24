@@ -2,14 +2,14 @@ const express = require('express');
 const createError = require('http-errors');
 const path = require('path');
 
-const indexRouter = require('./routes/index');
-
 const app = express();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use('/', indexRouter);
+app.get('/', function(req, res, next) {
+ res.render('index', { title: 'Express' });
+});
 
 app.use(function(req, res, next) {
   next(createError(404));
