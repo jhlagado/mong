@@ -1,4 +1,7 @@
 .messages
   each type in Object.keys(messages)
     each message in messages[type]
-      div.alert(class='alert-' + type)= message
+      if type === 'error'
+        div.alert(class='alert-danger')= message
+      else
+        div.alert(class='alert-' + type)= message
