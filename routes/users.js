@@ -87,13 +87,16 @@ router.route('/login')
     res.render('login', { title: 'Login' });
   })
 
-  .post(passport.authenticate('local', {
-    failureRedirect: '/users/login',
-    failureFlash: 'Invalid Username or Password'
-  }), (req, res) => {
-    req.flash('success', 'You are now logged in');
-    res.redirect('/');
-  });
+  .post(
+    passport.authenticate('local', {
+      failureRedirect: '/users/login',
+      failureFlash: 'Invalid Username or Password'
+    }),
+    (req, res) => {
+      req.flash('success', 'You are now logged in');
+      res.redirect('/');
+    }
+  );
 
 router.route('/logout')
 
