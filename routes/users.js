@@ -39,7 +39,7 @@ router.route('/register')
     res.render('register', { title: 'Register' });
   })
 
-  .post((req, res) => {
+  .post(async (req, res) => {
 
     // Form validator
     req.checkBody('name', 'Name field is required').notEmpty();
@@ -57,14 +57,16 @@ router.route('/register')
 
       const { name, email, username, password } = req.body;
 
+      const hashedPassword = await bcrypt.hash(password, 10);
+
       const newUser = new User({
         name,
         email,
         username,
-        password: bcrypt.hashSync(password, 10),
+        password: hashedPassword,
       });
 
-      newUser.save();
+      await newUser.save();
 
       req.flash('success', 'You are now registered and can login.');
       res.redirect('/');
