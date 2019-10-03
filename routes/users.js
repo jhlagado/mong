@@ -38,11 +38,6 @@ router.route('/register')
   })
   .post((req, res) => {
 
-    const { name } = req.body;
-    const { email } = req.body;
-    const { username } = req.body;
-    const { password } = req.body;
-
     // Form validator
     req.checkBody('name', 'Name field is required').notEmpty();
     req.checkBody('email', 'Email field is required').isEmail();
@@ -56,13 +51,18 @@ router.route('/register')
     if (errors) {
       res.render('register', { errors });
     } else {
+
+      const { name, email, username, password } = req.body;
+
       const newUser = new User({
         name,
         email,
         username,
         password: bcrypt.hashSync(password, 10),
       });
+
       newUser.save();
+      
       req.flash('success', 'You are now registered and can login.');
       res.redirect('/');
     }

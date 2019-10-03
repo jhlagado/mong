@@ -36,22 +36,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(expressValidator({
-  errorFormatter(param, msg, value) {
-    const namespace = param.split('.');
-    const root = namespace.shift();
-    let formParam = root;
-
-    while (namespace.length) {
-      formParam += `[${namespace.shift()}]`;
-    }
-    return {
-      param: formParam,
-      msg,
-      value
-    };
-  }
-}));
+app.use(expressValidator());
 
 app.use(function(req, res, next) {
   res.locals.messages = expressMessages(req, res);
