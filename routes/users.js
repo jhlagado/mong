@@ -8,10 +8,13 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-  User.findById(id)
-    .then(user => done(null, user))
-    .catch(err => done(err));
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user)
+  } catch (err) {
+    done(err);
+  }
 });
 
 passport.use(new LocalStrategy(
@@ -66,10 +69,15 @@ router.route('/register')
         password: hashedPassword,
       });
 
-      await newUser.save();
+      try {
+        await newUser.save();
+        req.flash('success', 'You are now registered and can login.');
+        res.redirect('/');
+      } catch (err) {
+        req.flash('danger', 'This user has already been registered.');
+        res.redirect('/');
+      }
 
-      req.flash('success', 'You are now registered and can login.');
-      res.redirect('/');
     }
   });
 
